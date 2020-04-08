@@ -39,3 +39,16 @@ function maxProfit2(prices) {
     }
     return profit;
 }
+
+//---------------Dynamic Programming solution---------------
+
+function maxProfit2(prices) {
+    //credit: Errichto
+    let bestWithoutStock = 0;
+    let bestWithStock = Number.NEGATIVE_INFINITY;
+    for (let price of prices) {
+        bestWithStock = Math.max(bestWithStock, bestWithoutStock - price);
+        bestWithoutStock = Math.max(bestWithoutStock, bestWithStock + price);
+    }
+    return bestWithoutStock;
+};
