@@ -36,6 +36,7 @@ function treasureIsland(grid) {
                 newq.push([r-1, c]);
                 newq.push([r, c+1]);
                 newq.push([r, c-1]);
+                grid[r][c] = "D";
             }
         }
         steps += 1;
