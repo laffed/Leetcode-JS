@@ -1,4 +1,6 @@
 /*
+NEED TO REWRITE FOR: https://codeburst.io/implementing-a-complete-binary-heap-in-javascript-the-priority-queue-7d85bd256ecf
+
 Based on the digitalocean implementation by Joshua Hall
 
 Implementing as array where:
