@@ -32,5 +32,34 @@ function helper(array,  target, left, right) {
     }
 }
 
+//other implementation:
+function shiftedSearch(array, target) {
+    let left = 0;
+    let right = array.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left+right)/2);
+
+        if (array[mid] === target) return mid;
+
+        //if the left side is sorted
+        if (array[left] <= array[mid]) {
+            //if target is within this sorted array
+            if (array[left] <= target && target < array[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else { //right side is sorted
+            //if the target is within this sorted array
+            if (array[mid] < target && target <= array[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return -1;
+}
 const array = [45, 61, 71, 72, 73, 0, 1, 21, 33, 45];
 console.log(shiftedArraySearch(array, 33))
