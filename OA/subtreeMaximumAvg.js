@@ -39,5 +39,28 @@ let n3 = new Node(18, [n7, n8]);
 let n1 = new Node(20, [n2, n3]);
 
 function subtreeMaximumAvg() {
+    let max = -1;
+    let maxNode = -1; 
+    function helper(node) {
+        if (!node) {
+            return [0,0];
+        }
+        let count = 1;
+        let sum = node.val;
+        for (let child in node.children) {
+            let curr = helper(node.children[child]);
+            sum += curr[0];
+            count += curr[1];
+        }
+        let avg = sum / count;
+        if (count > 1 && avg > max) {
+            max = avg;
+            maxNode = node
+        }
         
+        return [sum, count];
+    }
+
+    helper(root);
+    return maxNode;
 }
