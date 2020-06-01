@@ -31,7 +31,38 @@ Using Union-Find for fast look up and merging.
 */
 
 function minimumCost(N, connections) {
-    //sort edges by lowest to highest cost
+    let n = N;
+    let res = 0;
+    const parents = [];
+    for (let i = 0; i < N; i++) {
+        parents.push(i);
+    }
+   
     connections.sort((a,b) => a[2] - b[2]);
 
+    for (const [u, v, cost] of connections) {
+        if (find(u) !== find(v)) {
+            res += cost;
+            union(u,v);
+        }
+    }
+    return n === 1 ? res : -1; 
+}
+
+function union(u, v) {
+    const p1 = find(u);
+    const p2 = find(v);
+
+    if (p1 !== p2) {
+        parents[p1] = p2;
+        n -= 1;
+    }
+}
+
+function find(u) {
+    if (u === parents[u]) {
+        return u;
+    }
+    //path compression
+    return parents[u] = find(parents[u]);
 }
