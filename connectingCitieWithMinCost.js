@@ -37,7 +37,25 @@ function minimumCost(N, connections) {
     for (let i = 0; i < N; i++) {
         parents.push(i);
     }
-   
+
+    function union(u, v) {
+        const p1 = find(u);
+        const p2 = find(v);
+
+        if (p1 !== p2) {
+            parents[p1] = p2;
+            n -= 1;
+        }
+    }   
+
+    function find(u) {
+        if (u === parents[u]) {
+            return u;
+        }
+        //path compression
+        return parents[u] = find(parents[u]);
+    }
+
     connections.sort((a,b) => a[2] - b[2]);
 
     for (const [u, v, cost] of connections) {
@@ -49,20 +67,6 @@ function minimumCost(N, connections) {
     return n === 1 ? res : -1; 
 }
 
-function union(u, v) {
-    const p1 = find(u);
-    const p2 = find(v);
 
-    if (p1 !== p2) {
-        parents[p1] = p2;
-        n -= 1;
-    }
-}
 
-function find(u) {
-    if (u === parents[u]) {
-        return u;
-    }
-    //path compression
-    return parents[u] = find(parents[u]);
-}
+
