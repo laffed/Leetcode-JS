@@ -21,7 +21,13 @@ class LRUCahche {
         this.updateMostRecent(this.cache[key]);
     }
 
-    getValueFromKey() {
+    getValueFromKey(key) {
+        if (!(key in this.cache)) return null;
+        this.updateMostRecent(this.cache[key]);
+        return this.cache[key].value;
+    }
+
+    getMostRecentKey() {
         return this.listOfMostRecent.head.key;
     }
 
@@ -104,4 +110,77 @@ class DoublyLinkedListNode {
     }
 }
 
+/********SECOND IMPLEMENTATION***************/
 
+class LRUCache {
+    constructor(capacity) {
+        this.capacity = capacity;
+        this.count = 0;
+        this.head = null;
+        this.tail = null;
+        this.map = {};
+    }
+
+    get(key) {
+        if (this.map[key]) {
+            const {value} = this.map[key];
+            const {prev, next} = this.map[key];
+            if (prev) {
+                prev.next = next;
+            }
+            if (next) {
+                next.prev = prev || this.map[key];
+            }
+
+            this.map[key].prev = null;
+            if (this.head !== this.map[key]) {
+                this.map[key].next = this.head;
+                this.head.prev = this.map[key];
+            }
+
+            this.head = this.map[key];
+
+            return value;
+        }
+
+        return -1;
+    }
+
+    put(key, value) {
+        if (this.map[key]) {
+            this.map[key].value = value;
+            this.get(key);
+        } else {
+            this.map[key] = {
+                key,
+                value,
+                prev: null,
+                next: null
+            }
+            if (this.head) {
+                this.head.prev = this.map[key];
+                this.map[key].next = this.head;
+            }
+
+            if (!this.tail) {
+                this.tail = this.map[key];
+            }
+
+            this.count += 1;
+        }
+
+        if (this.count > this.capacity) {
+            let removeKey = this.tail.key;
+
+            if (this.tail.prev) {
+                this.tail.prev.next = null;
+                this.tail = this.tail.prev;
+                this.map[removeKey].prev = null;
+            }
+
+            delete this.map[removeKey];
+
+            this.count -= 1;
+        }
+    }
+}
