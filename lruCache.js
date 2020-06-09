@@ -1,75 +1,87 @@
+//LRU Cache
+/*
+put and get functions 
+using a linked list, head is the most recently used , tail is the last 
+hashMap for quick lookup
+*/
+
 class LRUCache {
     constructor(capacity) {
         this.capacity = capacity;
         this.count = 0;
         this.head = null;
         this.tail = null;
-        this.hashTable = {};
+        this.hash = {};
     }
-    
+
     get(key) {
-        if (this.hashTable[key]) {
-            const {value, prev, next} = this.hashTable[key];
+        if (this.hash[key]) {
+            const {value, prev, next} = this.hash[key];
+            //delete the connections of this node, get ready to move this node to head
             if (prev) {
                 prev.next = next;
             }
             if (next) {
-                next.prev = prev || next.prev;
+                next.prev = prev;
             }
-            if (this.tail === this.hashTable[key]) {
-                this.tail = prev || this.hashTable[key];
-            }
-            
-            this.hashTable[key].prev = null;
-            if (this.head !== this.hashTable[key]) {
-                this.hashTable[key].next = this.head;
-                this.head.prev = this.hashTable[key];
+            //if the get value was the next to be removed
+            if (this.tail === this.hash[key]) {
+                this.tail = prev || this.hash[key];
             }
             
-            this.head = this.hashTable[key];
-            
+            //redefine prev
+            this.hash[key].prev = null;
+
+            if (this.head !== this.hash[key]) {
+                this.hash[key].next = this.head;
+                this.head.prev = this.hash[key];
+            }
+            //redefine head
+            this.head = this.hash[key];
             return value;
         }
-        
-        return -1;
     }
-    
+
     put(key, value) {
-        if (this.hashTable[key]) {
-            this.hashTable[key].value = value;
+        //if key already exists
+        if (this.hash[key]) {
+            this.hash[key].value = value;
+            //update most recently used by calling get function
             this.get(key);
         } else {
-            this.hashTable[key] = {
-                key, 
-                value, 
+            //create new node
+            this.hash[key] = {
+                key: key,
+                value: value,
                 prev: null,
                 next: null
             }
+            //if there is a head, update the bindings
             if (this.head) {
-                this.head.prev = this.hashTable[key];
-                this.hashTable[key].next = this.head;
+                this.hash[key].next = this.head;
+                this.head.prev = this.hash[key];
             }
+            //redefine head
+            this.head = this.hash[key];
             
-            this.head = this.hashTable[key];
-            
+            //if no tail, make new head tail
             if (!this.tail) {
-                this.tail = this.hashTable[key];
+                this.tail = this.hash[key];
             }
-            
+
             this.count += 1;
         }
-        
+
         if (this.count > this.capacity) {
             let removeKey = this.tail.key;
-            
+            //remove tail bindings
             if (this.tail.prev) {
                 this.tail.prev.next = null;
                 this.tail = this.tail.prev;
-                this.hashTable[removeKey].prev = null;
             }
-            
-            delete this.hashTable[removeKey];
-            
+
+            //delete this node from hashTable
+            delete this.hash[removeKey];
             this.count -= 1;
         }
     }
