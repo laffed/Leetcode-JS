@@ -40,6 +40,7 @@ class LRUCache {
             this.head = this.hash[key];
             return value;
         }
+        return -1;
     }
 
     put(key, value) {
