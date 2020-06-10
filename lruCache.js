@@ -22,7 +22,7 @@ class LRUCache {
                 prev.next = next;
             }
             if (next) {
-                next.prev = prev;
+                next.prev = prev || next.prev //in the case where get value is head do not redefine the next.prev
             }
             //if the get value was the next to be removed
             if (this.tail === this.hash[key]) {
