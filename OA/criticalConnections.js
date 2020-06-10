@@ -25,47 +25,47 @@ There are no repeated connections.
 //Optimal Solution:
 //Idea: Tarjan's algorithm for strongly connected components
 //Identify low link value for all nodes
-//Time O(n)
+//Time O(V + E) Space O(V)
 
-function criticalConnections(nums, connections) {
-    //build graph
+function critical(n, connections) {
+    //adj list
     const graph = [];
     for (let i = 0; i < n; i++) {
         graph.push([]);
     }
 
-    for (const [u, v] of connections) {
+    for (const [u,v] of connections) {
         graph[u].push(v);
         graph[v].push(u);
     }
 
-    //initialize
-    let time = 0; //time when discovered each vertex
     const result = [];
-    const low = []; //low[u] records low-link value from u
-    const disc = []; //disc[u] records the time when u was discovered
-
+    let id = 0;
+    const ids = [];
+    const lowLink = [];
     for (let i = 0; i < n; i++) {
-        disc.push(Infinity); //use disc to track if visited 
+        ids[i] = Infinity;
     }
 
-    //DFS
-    function dfs(u, pre) {
-        disc[u] = low[u] = time++; //discover u
-        for (const v of graph[u]) {
-            if (v === pre) continue; //if parent vertex, ignore
-            if (disc[v] === Infinity) { //if not discovered
-                dfs(v, u);
-                low[u] = Math.min(low[u], low[v]);
-                if (low[v] > disc[u]) {
-                    // u - v is critical, there is no path for v to reach 
-                    // back to u or previous vertices of u
-                    result.push([u,v]);
+    //at: node that we are at, prev: previous node, to: node going to
+    function dfs(at, prev) {
+        ids[at] = lowLink[at] = id;
+        id += 1;
+
+        for (let to of graph[at]) {
+            if (to === prev) continue;
+            if (ids[to] === Infinity) {
+                dfs(to, at);
+                //after visiting and coming back to this callstack, update lowlink value with just visited value
+                lowLink[at] = Math.min(lowLink[at], lowLink[to]);
+                if (lowLink[to] > ids[at]) {
+                    //we did not update our low link value from the recently visited node, and this connections to - at is critical
+                    result.push([at, to]);
                 }
+
             } else {
-                //if v discovered and is not parent of u,
-                //update lowlink value of u. cannot use low[v] bcs u is not a subtree
-                low[u] = Math.min(low[u], disc[v]);
+                //going to node is not the previous node but has been visited before. update lowlink value
+                lowLink[at] = Math.min(lowLink[at], ids[to]);
             }
         }
     }
