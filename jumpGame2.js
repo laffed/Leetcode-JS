@@ -38,3 +38,12 @@ function jumpGame2(nums) {
 
 const test = [2,3,1,1,4];
 console.log(jumpGame2(test));
+
+/*
+ i      steps       jumps       maxIndx
+ 0      2           1           2
+ 1      2           1           4
+ 2      2           1           4
+ 3      4           2           4
+ 4      4           2           8
+ */
